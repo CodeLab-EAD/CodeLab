@@ -1,0 +1,177 @@
+﻿@model IEnumerable<CodeLab.Models.AulaModel>
+@using CodeLab.Autenticacao
+
+@{
+    var role = Context.Session.GetString(SessionKeys.UserRole);
+    ViewData["Title"] = "Aulas";
+}
+
+<style>
+    body {
+        font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+        background-color: #0f172a;
+        color: #e2e8f0;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        max-width: 1100px;
+        margin: 50px auto;
+        padding: 24px;
+        background: #1e293b;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+
+    h1 {
+        text-align: center;
+        font-size: 28px;
+        margin-bottom: 28px;
+        background: linear-gradient(90deg, #00c6ff, #0072ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 700;
+    }
+
+    .tbl {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 15px;
+    }
+
+        .tbl thead {
+            background: linear-gradient(90deg, #0072ff, #00c6ff);
+            color: #fff;
+        }
+
+        .tbl th, .tbl td {
+            text-align: left;
+            padding: 14px;
+            border-bottom: 1px solid #2d333b;
+        }
+
+        .tbl tbody tr:hover {
+            background-color: #1c2128;
+            transition: 0.2s;
+        }
+
+        .tbl th {
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+    .acoes {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 8px 14px;
+        border-radius: 6px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: none;
+    }
+
+    .btn-editar {
+        background: linear-gradient(90deg, #4facfe, #00f2fe);
+        color: #fff;
+    }
+
+        .btn-editar:hover {
+            box-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
+            transform: scale(1.05);
+        }
+
+    .btn-excluir {
+        background: linear-gradient(90deg, #ff416c, #ff4b2b);
+        color: #fff;
+    }
+
+        .btn-excluir:hover {
+            box-shadow: 0 0 10px rgba(255, 75, 43, 0.5);
+            transform: scale(1.05);
+        }
+
+    .sem-dados {
+        text-align: center;
+        padding: 20px;
+        font-style: italic;
+        color: #8b949e;
+    }
+
+    .novo-btn {
+        display: block;
+        width: fit-content;
+        margin: 0 auto 24px auto;
+        padding: 12px 24px;
+        background: linear-gradient(90deg, #0072ff, #00c6ff);
+        color: white;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: transform 0.3s, box-shadow 0.3s;
+        box-shadow: 0 0 10px rgba(0, 114, 255, 0.3);
+    }
+
+        .novo-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(0, 198, 255, 0.5);
+        }
+</style>
+
+<div class="container">
+    <h1>📚 Aulas</h1>
+
+    <a asp-action="CadastrarAula" class="novo-btn">+ Novo Curso</a>
+
+    <table class="tbl">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Curso</th>
+                <th>Instrutor</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var a in Model)
+                {
+                    <tr>
+                        <td>@a.IdAula</td>
+                        <td>@a.Curso</td>
+                        <td>@a.Instrutor</td>
+
+                        @if (role == "Admin" || role == "Gerente")
+                        {
+                            <td>
+                                <div class="acoes">
+                                    <a asp-action="EditarAula" asp-route-id="@a.IdAula" class="btn btn-editar">Editar</a>
+                                    <form asp-action="ExcluirAula" method="post" style="display:inline" onsubmit="return confirm('Deseja excluir este curso?');">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@a.IdAula" />
+                                        <button type="submit" class="btn btn-excluir">Excluir</button>
+                                    </form>
+                                </div>
+                            </td>
+                        }
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="4" class="sem-dados">Nenhum curso cadastrado.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

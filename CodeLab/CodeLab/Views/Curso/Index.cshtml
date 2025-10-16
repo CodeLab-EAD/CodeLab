@@ -1,0 +1,196 @@
+﻿@model IEnumerable<CodeLab.Models.CursoModel>
+@using CodeLab.Autenticacao
+
+@{
+    var role = Context.Session.GetString(SessionKeys.UserRole);
+    ViewData["Title"] = "Cursos EAD";
+}
+
+<style>
+    body {
+        font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+        background-color: #0d1117;
+        color: #e6edf3;
+        margin: 0;
+    }
+
+    .container {
+        max-width: 1100px;
+        margin: 50px auto;
+        padding: 24px;
+        background: #161b22;
+        border-radius: 14px;
+        box-shadow: 0 4px 20px rgba(56, 189, 248, 0.15);
+    }
+
+    h1 {
+        text-align: center;
+        font-size: 28px;
+        margin-bottom: 28px;
+        background: linear-gradient(90deg, #00c6ff, #0072ff);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-weight: 700;
+    }
+
+    .novo-btn {
+        display: block;
+        width: fit-content;
+        margin: 0 auto 24px auto;
+        padding: 12px 24px;
+        background: linear-gradient(90deg, #0072ff, #00c6ff);
+        color: white;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: transform 0.3s, box-shadow 0.3s;
+        box-shadow: 0 0 10px rgba(0, 114, 255, 0.3);
+    }
+
+        .novo-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(0, 198, 255, 0.5);
+        }
+
+    .tbl {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 15px;
+    }
+
+        .tbl thead {
+            background: linear-gradient(90deg, #0072ff, #00c6ff);
+            color: #fff;
+        }
+
+        .tbl th, .tbl td {
+            text-align: left;
+            padding: 14px;
+            border-bottom: 1px solid #2d333b;
+        }
+
+        .tbl tbody tr:hover {
+            background-color: #1c2128;
+            transition: 0.2s;
+        }
+
+        .tbl th {
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .tbl img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 0 8px rgba(0, 198, 255, 0.3);
+            border: 2px solid rgba(0, 198, 255, 0.4);
+        }
+
+    .acoes {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 8px 14px;
+        border-radius: 6px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: none;
+    }
+
+    .btn-editar {
+        background: linear-gradient(90deg, #4facfe, #00f2fe);
+        color: #fff;
+    }
+
+        .btn-editar:hover {
+            box-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
+            transform: scale(1.05);
+        }
+
+    .btn-excluir {
+        background: linear-gradient(90deg, #ff416c, #ff4b2b);
+        color: #fff;
+    }
+
+        .btn-excluir:hover {
+            box-shadow: 0 0 10px rgba(255, 75, 43, 0.5);
+            transform: scale(1.05);
+        }
+
+    .sem-dados {
+        text-align: center;
+        padding: 20px;
+        font-style: italic;
+        color: #8b949e;
+    }
+</style>
+
+<div class="container">
+    <h1>📚 Cursos EAD de Programação</h1>
+
+    <a asp-action="CadastrarCurso" class="novo-btn">+ Novo Curso</a>
+
+    <table class="tbl">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Imagem</th>
+                <th>Titulo</th>
+                <th>Duração</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var c in Model)
+                {
+                    <tr>
+                        <td>@c.IdCurso</td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(c.FotoCurso))
+                            {
+                                <img src="@c.FotoCurso" alt="Imagem do curso @c.NomeCurso" />
+                            }
+                            else
+                            {
+                                <img src="~/imagens/sem-foto.png" alt="Sem imagem" />
+                            }
+                        </td>
+                        <td>@c.NomeCurso</td>
+                        <td>@c.Duracao</td>
+
+                        @if (role == "Admin" || role == "Gerente")
+                        {
+                            <td>
+                                <div class="acoes">
+                                    <a asp-action="EditarCurso" asp-route-id="@c.IdCurso" class="btn btn-editar">Editar</a>
+                                    <form asp-action="ExcluirCurso" method="post" style="display:inline" onsubmit="return confirm('Deseja excluir este curso?');">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@c.IdCurso" />
+                                        <button type="submit" class="btn btn-excluir">Excluir</button>
+                                    </form>
+                                </div>
+                            </td>
+                        }
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="6" class="sem-dados">Nenhum curso cadastrado.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

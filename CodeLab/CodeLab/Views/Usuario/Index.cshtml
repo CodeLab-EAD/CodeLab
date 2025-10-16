@@ -1,0 +1,174 @@
+﻿@model IEnumerable<CodeLab.Models.UsuarioModel>
+@using CodeLab.Autenticacao
+
+@{
+    var role = Context.Session.GetString(SessionKeys.UserRole);
+    ViewData["Title"] = "Usuários";
+}
+
+<style>
+    body {
+        font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
+        background: linear-gradient(135deg, #1f1c2c, #928dab);
+        color: #f0f0f0;
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 50px auto;
+        padding: 30px;
+        background: rgba(30, 30, 60, 0.95);
+        border-radius: 15px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    }
+
+    h1 {
+        text-align: center;
+        font-size: 30px;
+        margin-bottom: 30px;
+        color: #ffdd57;
+        text-shadow: 1px 1px 6px rgba(0,0,0,0.7);
+    }
+
+    .tbl {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 16px;
+    }
+
+        .tbl thead {
+            background: linear-gradient(90deg, #6a11cb, #2575fc);
+            color: #fff;
+            text-transform: uppercase;
+        }
+
+        .tbl th, .tbl td {
+            text-align: left;
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .tbl tbody tr:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .tbl th {
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+    .btn {
+        display: inline-block;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: none;
+    }
+
+    .btn-editar {
+        background: #42a5f5;
+        color: #fff;
+    }
+
+        .btn-editar:hover {
+            background: #1e88e5;
+            transform: scale(1.05);
+        }
+
+    .btn-excluir {
+        background: #ef5350;
+        color: #fff;
+    }
+
+        .btn-excluir:hover {
+            background: #d32f2f;
+            transform: scale(1.05);
+        }
+
+    .acoes {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .sem-dados {
+        text-align: center;
+        padding: 25px;
+        font-style: italic;
+        color: #ccc;
+    }
+
+    .novo-btn {
+        display: block;
+        width: fit-content;
+        margin: 0 auto 25px auto;
+        padding: 12px 24px;
+        background: linear-gradient(90deg, #ff6a00, #ee0979);
+        color: white;
+        border-radius: 10px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.3s;
+    }
+
+        .novo-btn:hover {
+            background: linear-gradient(90deg, #ee0979, #ff6a00);
+            transform: scale(1.05);
+        }
+</style>
+
+<div class="container">
+    <h1>Usuários Cadastrados</h1>
+
+    <a asp-action="CadastrarUsuario" class="novo-btn">+ Novo Usuário</a>
+
+    <table class="tbl">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Usuário</th>
+                <th>Nível de Acesso</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                foreach (var r in Model)
+                {
+                    <tr>
+                        <td>@r.IdUsuario</td>
+                        <td>@r.NomeUsuario</td>
+                        <td>@r.NivelAcesso</td>
+
+                        @if (role == "Admin" || role == "Gerente")
+                        {
+                            <td>
+                                <div class="acoes">
+                                    <a asp-action="EditarUsuario" asp-route-id="@r.IdUsuario" class="btn btn-editar">Editar</a>
+                                    <form asp-action="ExcluirUsuario" method="post" style="display:inline" onsubmit="return confirm('Deseja excluir este usuário?');">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@r.IdUsuario" />
+                                        <button type="submit" class="btn btn-excluir">Excluir</button>
+                                    </form>
+                                </div>
+                            </td>
+                        }
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="4" class="sem-dados">Nenhum usuário cadastrado.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

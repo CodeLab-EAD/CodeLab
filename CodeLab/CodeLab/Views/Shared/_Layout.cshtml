@@ -1,0 +1,162 @@
+﻿@using CodeLab.Autenticacao
+
+@{
+    var isLogged = Context.Session.GetInt32(SessionKeys.UserId).HasValue;
+    var role = Context.Session.GetString(SessionKeys.UserRole);
+    var userName = Context.Session.GetString(SessionKeys.UserName);
+}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"] - Plataforma EAD</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    @RenderSection("Styles", required: false)
+
+    <style>
+        /* ---------- ESTILO GLOBAL ---------- */
+        body {
+            font-family: "Segoe UI", Roboto, Arial, sans-serif;
+            margin: 0;
+            background-color: #0d1117;
+            color: #e6edf3;
+        }
+
+        main.container {
+            padding: 24px;
+        }
+
+        /* ---------- HEADER / NAVBAR ---------- */
+        .topnav {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 14px 28px;
+            background: linear-gradient(90deg, #0072ff, #00c6ff);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-radius: 0 0 12px 12px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            color: #fff;
+            font-size: 22px;
+            letter-spacing: 0.5px;
+        }
+
+            .logo::before {
+                content: "🎓";
+                font-size: 24px;
+            }
+
+        .topnav a {
+            text-decoration: none;
+            color: #e6edf3;
+            font-weight: 500;
+            font-size: 15px;
+            padding: 8px 14px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+            .topnav a:hover {
+                background-color: rgba(255,255,255,0.1);
+                color: #ffffff;
+            }
+
+            .topnav a.active {
+                background-color: #fff;
+                color: #0072ff;
+            }
+
+        .spacer {
+            flex: 1;
+        }
+
+        /* ---------- BOTÃO DE SAÍDA ---------- */
+        .btn-link {
+            background: #00c6ff;
+            border: none;
+            color: #0d1117;
+            border-radius: 6px;
+            padding: 8px 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+            .btn-link:hover {
+                background: #0072ff;
+                color: #fff;
+            }
+
+        /* ---------- TEXTO DE USUÁRIO ---------- */
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+            color: #fff;
+            background: rgba(255,255,255,0.1);
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+            .user-info span {
+                font-weight: 600;
+                color: #fff;
+            }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav class="topnav">
+            <div class="logo">Plataforma EAD</div>
+
+            <a asp-controller="Curso" asp-action="Index">Cursos</a>
+            <a asp-controller="Instrutor" asp-action="Index">Instrutores</a>
+            <a asp-controller="Aula" asp-action="Index">Aulas</a>
+            <a asp-controller="Usuarrio" asp-action="Index">Usuários</a>
+
+            @if (role == "Admin")
+            {
+                <a asp-controller="Usuario" asp-action="CadastrarUsuario">Cadastrar Usuários</a>
+            }
+
+            <span class="spacer"></span>
+
+            @if (isLogged)
+            {
+                <div class="user-info">
+                    <span>Olá, @userName</span>
+                </div>
+
+                <form asp-controller="Auth" asp-action="Logout" method="post" style="display:inline;">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn-link">Sair</button>
+                </form>
+            }
+            else
+            {
+                <a asp-controller="Auth" asp-action="Login" class="btn-link">Entrar</a>
+            }
+        </nav>
+    </header>
+
+    <main role="main" class="container">
+        @RenderBody()
+    </main>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

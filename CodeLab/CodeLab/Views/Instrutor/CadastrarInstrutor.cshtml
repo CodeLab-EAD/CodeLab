@@ -1,0 +1,166 @@
+﻿@model CodeLab.Models.InstrutorModel
+
+@{
+    ViewData["Title"] = "Cadastrar Instrutor";
+}
+
+<style>
+    body {
+        font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+        background-color: #0f172a;
+        color: #e2e8f0;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        max-width: 640px;
+        margin: 50px auto;
+        padding: 28px;
+        border: 1px solid #1e293b;
+        border-radius: 12px;
+        background: #1e293b;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    }
+
+    h1 {
+        margin-bottom: 24px;
+        font-size: 26px;
+        color: #38bdf8;
+        text-align: center;
+        font-weight: 700;
+    }
+
+    form {
+        display: block;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 600;
+        color: #f1f5f9;
+    }
+
+    input[type="text"],
+    input[type="file"],
+    input[type="email"] {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #334155;
+        border-radius: 8px;
+        background-color: #0f172a;
+        color: #e2e8f0;
+        font-size: 14px;
+        box-sizing: border-box;
+        transition: border-color 0.3s, background 0.3s;
+    }
+
+    input:focus {
+        border-color: #38bdf8;
+        outline: none;
+        background-color: #1e293b;
+    }
+
+    .form-group {
+        margin-bottom: 18px;
+    }
+
+    .validation-message {
+        color: #f87171;
+        font-size: 13px;
+        margin-top: 6px;
+        display: block;
+    }
+
+    .actions {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        margin-top: 10px;
+    }
+
+    .btn-primary {
+        flex: 1;
+        padding: 10px 16px;
+        border: none;
+        border-radius: 8px;
+        background: #38bdf8;
+        color: #0f172a;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s;
+        text-align: center;
+    }
+
+        .btn-primary:hover {
+            background: #0ea5e9;
+        }
+
+    .btn-secondary {
+        flex: 1;
+        padding: 10px 14px;
+        border-radius: 8px;
+        border: 1px solid #64748b;
+        color: #e2e8f0;
+        text-decoration: none;
+        background: #334155;
+        text-align: center;
+        transition: background 0.3s;
+    }
+
+        .btn-secondary:hover {
+            background: #475569;
+        }
+
+    .hint {
+        color: #94a3b8;
+        font-size: 13px;
+        text-align: center;
+        margin-top: 10px;
+        width: 100%;
+    }
+
+    small.hint {
+        display: block;
+        margin-top: 5px;
+        text-align: left;
+    }
+</style>
+
+<div class="container">
+    <h1> Cadastrar Instrutor</h1>
+
+    <form asp-action="CadastrarInstrutor" enctype="multipart/form-data" method="post">
+        @Html.AntiForgeryToken()
+
+        <input asp-for="IdInstrutor" type="hidden" />
+
+        <div class="form-group">
+            <label asp-for="NomeInstrutor">Nome do Instrutor</label>
+            <input asp-for="NomeInstrutor" placeholder="Ex: João Silva" />
+            <span asp-validation-for="NomeInstrutor" class="validation-message"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Especialidade">Especialidade</label>
+            <input asp-for="Especialidade" placeholder="Ex: Desenvolvimento Web" />
+            <span asp-validation-for="Especialidade" class="validation-message"></span>
+        </div>
+       
+        <div class="actions">
+            <button type="submit" class="btn-primary">Salvar</button>
+            <a asp-action="Index" class="btn-secondary">Voltar</a>
+        </div>
+
+        <div class="hint">💡 Dica: verifique as informações antes de salvar.</div>
+    </form>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+}

@@ -1,0 +1,140 @@
+﻿@model CodeLab.Models.UsuarioModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Acesso";
+}
+
+<style>
+    body {
+        background-color: #0d1117;
+        font-family: "Segoe UI", Roboto, Arial, sans-serif;
+        color: #e6edf3;
+    }
+
+    .login-wrap {
+        max-width: 380px;
+        margin: 80px auto;
+        padding: 32px 28px;
+        border-radius: 16px;
+        background: #111827;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+        border-top: 5px solid #00c6ff;
+        text-align: center;
+        animation: fadeIn 0.5s ease-in-out;
+    }
+
+        .login-wrap h2 {
+            color: #00c6ff;
+            font-size: 22px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+    .form-field {
+        margin-bottom: 16px;
+        text-align: left;
+    }
+
+        .form-field label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #cbd5e1;
+        }
+
+        .form-field input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            background: #1e293b;
+            color: #e6edf3;
+            transition: all 0.2s ease;
+            font-size: 15px;
+        }
+
+            .form-field input:focus {
+                outline: none;
+                border-color: #00c6ff;
+                box-shadow: 0 0 0 2px rgba(0,198,255,0.3);
+                background: #111827;
+            }
+
+    .alert-error {
+        background: #fee2e2;
+        border: 1px solid #ef4444;
+        color: #991b1b;
+        padding: 10px 12px;
+        border-radius: 8px;
+        margin-bottom: 16px;
+        font-weight: 500;
+        text-align: left;
+    }
+
+    .btn {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 8px;
+        background: #00c6ff;
+        color: #0d1117;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 16px;
+        transition: all 0.2s ease;
+        box-shadow: 0 4px 10px rgba(0,198,255,0.3);
+    }
+
+        .btn:hover {
+            background: #0072ff;
+            color: #fff;
+            transform: scale(1.03);
+        }
+
+    .login-footer {
+        margin-top: 20px;
+        font-size: 14px;
+        color: #94a3b8;
+    }
+
+        .login-footer a {
+            color: #00c6ff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+            .login-footer a:hover {
+                text-decoration: underline;
+            }
+</style>
+
+<section class="login-wrap">
+    <h2>🎓 Bem-vindo à Plataforma EAD</h2>
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert-error">@ViewBag.Error</div>
+    }
+
+    <form asp-action="Login" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+
+        <div class="form-field">
+            <label>E-mail</label>
+            <input type="email" name="email" placeholder="exemplo@ead.com" required />
+        </div>
+
+        <div class="form-field">
+            <label>Senha</label>
+            <input type="password" name="senha" placeholder="••••••••" required />
+        </div>
+
+        <button type="submit" class="btn">Entrar</button>
+    </form>
+
+    <div class="login-footer">
+        <p>Problemas com o acesso? <a href="#">Fale com o suporte</a></p>
+    </div>
+</section>
